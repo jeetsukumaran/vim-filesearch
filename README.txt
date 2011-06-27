@@ -1,7 +1,7 @@
-Filesearch is a plugin for searching the local filesystem for files by name or
-content. The searches can be done using either glob patterns (searching for
-filenames only) or regular expression patterns (searching for filenames or file
-content).
+'Filesearch' is a plugin for searching the local filesystem for files by name
+or content. The searches can be done using either glob patterns (searching for
+filenames only) or regular expression patterns (searching for filenames or
+file content).
 
 Three commands are provided:
 
@@ -39,4 +39,16 @@ on-line here:
 The public source code repository can be found here:
 
     http://github.com/jeetsukumaran/vim-filesearch
+
+Vim has much of this functionality built-in (e.g. "vimgrep", "find").  But I
+find that the browsing, navigation and management of the results from these
+commands not the most convenient. For example, `:find` automatically goes to
+the first match, and you have to type `:2find` to go to the second match. I
+wanted a way to view the results in single buffer, apply normal Vim search and
+movement commands to navigate to the results of my choice, and the ability to
+easily open target files/lines in a new window or tab page. There are also a
+number of plugins that do achieve something similar (e.g., the excellent 'Ack'
+plugin).  But I wanted to be able to use Vim-dialect regular expressions when
+working inside Vim, and also wanted a little more control over how the results
+are displayed and sorted. Thus, I wrote this plugin.
 
