@@ -42,13 +42,13 @@ The public source code repository can be found here:
 
 Vim has much of this functionality built-in (e.g. "vimgrep", "find").  But I
 find that the browsing, navigation and management of the results from these
-commands not the most convenient. For example, `:find` automatically goes to
-the first match, and you have to type `:2find` to go to the second match. I
-wanted a way to view the results in single buffer, apply normal Vim search and
-movement commands to navigate to the results of my choice, and the ability to
-easily open target files/lines in a new window or tab page. There are also a
-number of plugins that do achieve something similar (e.g., the excellent 'Ack'
-plugin).  But I wanted to be able to use Vim-dialect regular expressions when
-working inside Vim, and also wanted a little more control over how the results
-are displayed and sorted. Thus, I wrote this plugin.
+native Vim commands not the most convenient. For example, `:find` automatically
+goes to the first match, and you have to type `:2find` to go to the second
+match. I would prefer to view the results in single buffer, apply normal Vim
+search and movement commands to navigate to the results of my choice, and the
+ability to easily open target files/lines in a new window or tab page. There
+are also a number of plugins that do achieve something similar (e.g., the
+excellent 'Ack' plugin). But I wanted to be able to use Vim-dialect regular
+expressions when working inside Vim, and also wanted a little more control over
+how the results are displayed and sorted. Thus, I wrote this plugin.
 
