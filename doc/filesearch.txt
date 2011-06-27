@@ -1,0 +1,230 @@
+*filesearch.txt*	Filesystem searching utility.
+
+===============================================================================
+                                             *filesearch* *filesearch-contents*
+CONTENTS~
+
+    1. Introduction ....................... |filesearch-introduction|
+    2. Commands ........................... |filesearch-commands|
+    3. Filetype Options ..  ............... |filesearch-filetype-options|
+    4. Key Mappings (Catalog Viewer) ...... |filesearch-keys|
+    5. Options and Settings ............... |filesearch-options|
+
+===============================================================================
+                                                      *filesearch-introduction*
+INTRODUCTION~
+
+Filesearch is a plugin for searching the local filesystem for files by name or
+content, using glob or regular expression patterns. By default searches are
+carried out recursively starting from the current directory, but the search
+paths can be adjusted through the use of optional arguments. Searches can be
+restricted to specific filetypes through the use of filetype filter options
+(e.g., "py" for Python files, "cpp" for C++ source and header files).
+
+Results will be shown in new buffer (the "catalog viewer"). They can be
+browsed using all the normal Vim |movement| keys, and can be selected for
+viewing the in main (previous) window, a new vertical or horizontal split
+window, or new tab page (see |filesearch-keys|).
+
+===============================================================================
+                                                          *filesearch-commands*
+COMMANDS~
+
+These following commands are provided globally by Filesearch:
+
+                                                                     *:Fsglob*
+:Fsglob /{glob}/[filetype-options] [paths]
+
+    Search filesystem for files with names matching the glob pattern {glob},
+    which can include |wildcard| and |startstar-wildcard| characters.
+
+                                                                     *:Fsfind*
+:Fsfind /{pattern}/[filetype-options] [paths]
+
+    Search filesystem for files with names matching the regular expression
+    pattern given by {pattern}.
+
+                                                                     *:Fsgrep*
+:Fsgrep /{pattern}/[filetype-options] [paths]
+
+    Search filesystem for files with lines of content matching the regular
+    expression pattern {pattern}.
+
+By default, the current working directory is searched recursively. This can be
+changed by specifying one or more directories to search using the [paths]
+argument. The directory paths here can contain |wildcard| and
+|startstar-wildcard| characters.
+
+You can restrict the searches to files of specific types by providing one or
+more filetype filters to use in [filetype-options] (see
+|filesearch-filetype-filters|).  Multiple filters should be separated by
+commas, and no spaces should be present.
+
+Instead of enclosing the {glob} or {pattern} in '/', any
+non-ID character (see |'isident'|) can be used, so long as
+it does not appear in the {glob} or {pattern}.
+
+Some examples of use:
+                    >
+    :Fsglob /__init__.*/
+    :Fsglob /progress???.*/ ~/src /var/downloads/**
+    :Fsglob /tree??px*/py,rst,txt
+    :Fsglob /data*/cpp,txt ~/projects
+    :Fsglob @/lib/qt*/@cpp
+
+    :Fsfind /data[A-Za-z]\d\+/
+    :Fsfind /\cfileio.*/ ~/src /var/downloads/**
+    :Fsfind /tree.*/python,rst,txt
+    :Fsfind /tree.*/ruby,rake
+    :Fsfind @/usr/local.*/.*txt@
+
+    :Fsgrep /def read_\w\+(/
+    :Fsgrep /def read_\w\+(/python,rst
+    :Fsgrep /void\s\+\w\+\(zipio\|rawio\)/cpp . ../backups ~/src
+    :Fsgrep /^\s*class\s+\w+.*:/py ~/src ~/lib/src .
+    :Fsgrep @^\s*def\s+\w+(.*)\s*:@py ~/src ~/lib/src .
+<
+===============================================================================
+                                                 *filesearch-filetype-options*
+Filetype Options~
+
+The following flags can be used in |Fsglob|, |Fsfind| and |Fsgrep| commands
+to restrict the scope of the file search. Multiple options should be separated
+by commas. If multiple options are given, then the scope is the union of the
+options (e.g., "python,cpp" means to search for Python OR C++ files). No spaces
+should be present in the option specification. Filetypes are identified based
+on the extension.
+
+    as           .as .mxml
+    ada          .ada .adb .ads
+    asm          .asm .s
+    batch        .bat .cmd
+    cc           .c .h .xs
+    cfmx         .cfc .cfm .cfml
+    cpp          .cpp .cc .cxx .m .hpp .hh .h .hxx
+    csharp       .cs
+    css          .css
+    elisp        .el
+    erlang       .erl .hrl
+    fortran      .f .f77 .f90 .f95 .f03 .for .ftn .fpp
+    haskell      .hs .lhs
+    hh           .h
+    html         .htm .html .shtml .xhtml
+    java         .java .properties
+    js           .js
+    jsp          .jsp .jspx .jhtm .jhtml
+    lisp         .lisp .lsp
+    lua          .lua
+    make         Makefiles
+    mason        .mas .mhtml .mpl .mtxt
+    objc         .m .h
+    objcpp       .mm .h
+    ocaml        .ml .mli
+    parrot       .pir .pasm .pmc .ops .pod .pg .tg
+    perl         .pl .pm .pod .t
+    php          .php .phpt .php3 .php4 .php5 .phtml
+    plone        .pt .cpt .metadata .cpy .py
+    py           .py
+    python       .py
+    rake         Rakefiles
+    rst          .rst .txt .inc
+    ruby         .rb .rhtml .rjs .rxml .erb .rake
+    scala        .scala
+    scheme       .scm .ss
+    shell        .sh .bash .csh .tcsh .ksh .zsh
+    smalltalk    .st
+    sql          .sql .ctl
+    tcl          .tcl .itcl .itk
+    tex          .tex .cls .sty
+    txt          .txt
+    tt           .tt .tt2 .ttml
+    vb           .bas .cls .frm .ctl .vb .resx
+    vim          .vim
+    xml          .xml .dtd .xslt .ent
+    yaml         .yaml .yml
+
+===============================================================================
+                                                             *filesearch-keys*
+KEY MAPPINGS ~
+
+The results viewer supports the following key mappings.
+
+-------------------------------------------------------------------------------
+Catalog Management~
+
+cs                  Cycle through sort regimes.
+cd                  Cycle through display regimes (alternate).
+r                   Update (rebuild/refresh) index.
+d                   Delete the selected buffer.
+D                   Unconditionally delete the selected buffer.
+x                   Wipe the selected buffer.
+X                   Unconditionally wipe the selected buffer.
+q                   Quit the index/catalog window.
+
+-------------------------------------------------------------------------------
+Open Selected Buffer~
+
+The following keys all open the currently-selected buffer and switch focus to
+it. The catalog buffer will be closed if 'g:filesearch_autodismiss_on_select'
+evaluates to true; otherwise it will be kept open.
+
+<CR>, o             Open the currently-selected buffer in previous window.
+s                   Open the currently-selected buffer in a new vertical
+                    split.
+i                   Open the currently-selected buffer in a new split.
+t                   Open the currently-selected buffer in a new tab page.
+
+-------------------------------------------------------------------------------
+Preview Selected Buffer~
+
+The following keys all open the currently-selected buffer, but retain focus on
+the catalog viewer.
+
+O, go               Preview the currently-selected buffer in the previous
+                    window.
+S, gs               Preview the currently-selected buffer is a new vertical
+                    split.
+I, gi               Preview the currently-selected buffer is a new split
+T                   Preview the currently-selected buffer is a new tab
+                    page.
+<SPACE>, <C-N>      Go to the next buffer entry and preview it in the previous
+                    window.
+<C-SPACE>, <C-P>    Go to the previous buffer entry and preview it in the
+                    previous window.
+-------------------------------------------------------------------------------
+Window Control~
+
+A                   Zoom/unzoom window, expanding to full height (if
+                    horizontally split) or full width (if vertically split)
+
+===============================================================================
+                                                          *filesearch-options*
+OPTIONS AND SETTINGS~
+
+The following options can be used to customize the behavior of this plugin:
+
+g:filesearch_viewport_split_policy~
+    Default: "L"
+    Determines how a new Filesearch window will be opened. Can be one of the
+    following values:
+        "L"   : vertical left (full screen height)
+        "R"   : vertical right (full screen height)
+        "T"   : horizontal top (full screen width)
+        "B"   : horizontal bottom (full screen width)
+
+g:filesearch_autodismiss_on_select~
+    Default: 1
+    If true, then selection an entry with <CR> will close the catalog. Otherwise,
+    catalog stays open. Default is 1.
+
+g:filesearch_autoexpand_on_split~
+    Default: 1
+    If true and running in GUI mode, then the application screen will be expanded
+    to accommodate the Filesearch window.
+
+g:filesearch_split_size~
+    Default: 40
+    If greater than 0, this will be the width of the Filesearch window in any
+    vertical splitting mode, or its height in any horizontal splitting mode.
+
+ vim:tw=78:ts=8:ft=help:norl:
