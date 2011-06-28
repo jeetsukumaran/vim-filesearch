@@ -1525,9 +1525,9 @@ endfunction
 " Public Command and Key Maps {{{1
 " ==============================================================================
 
-command! -bang -nargs=* Fsfind          :call <SID>OpenFilesearchFindRx(<q-args>)
-command! -bang -nargs=* Fsglob          :call <SID>OpenFilesearchFindGlob(<q-args>)
-command! -bang -nargs=* Fsgrep          :call <SID>OpenFilesearchGrep(<q-args>)
+command! -complete=file -bang -nargs=* Fsfind   :call <SID>OpenFilesearchFindRx(<q-args>)
+command! -complete=file -bang -nargs=* Fsglob   :call <SID>OpenFilesearchFindGlob(<q-args>)
+command! -complete=file -bang -nargs=* Fsgrep   :call <SID>OpenFilesearchGrep(<q-args>)
 
 if !exists('g:filesearch_suppress_keymaps') || !g:filesearch_suppress_keymaps
 endif
