@@ -153,13 +153,24 @@ The results viewer supports the following key mappings.
 Catalog Management~
 
 cs                  Cycle through sort regimes.
-cd                  Cycle through display regimes (alternate).
+cd                  Cycle through display regimes.
 r                   Update (rebuild/refresh) index.
 d                   Delete the selected buffer.
 D                   Unconditionally delete the selected buffer.
 x                   Wipe the selected buffer.
 X                   Unconditionally wipe the selected buffer.
 q                   Quit the index/catalog window.
+
+-------------------------------------------------------------------------------
+Movement Within the Catalog Viewer~
+
+The following special mappings are defined to jump quickly to the next entry
+or file group.
+
+<C-N>               Go to the next index entry.
+<C-P>               Go to the previous index entry.
+]f                  Go to the next file entry.
+[f                  Go the previous file entry.
 
 -------------------------------------------------------------------------------
 Open Selected Buffer~
