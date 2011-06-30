@@ -1174,7 +1174,7 @@ function! s:NewCatalogViewer(bufname)
         if a:escape_paths
             let new_list = []
             for item in filepaths_list
-                call add(new_list, s:_format_escaped_filename(item))
+                call add(new_list, s:_format_escaped_filename(fnamemodify(item, ":p")))
                 " call add(new_list, substitute(item, " ", '\ ', "g"))
             endfor
             return new_list
@@ -1218,7 +1218,7 @@ function! s:NewFilesearchFindViewer()
                         \ 'basename': fnamemodify(fpath, ":t"),
                         \ 'parentdir': fnamemodify(fpath, ":p:h"),
                         \ 'extension': fnamemodify(fpath, ":e"),
-                        \ 'escapedfilepath' : s:_format_escaped_filename(fpath),
+                        \ 'escapedfilepath' : s:_format_escaped_filename(fullfpath),
                         \ 'type' : ftype,
                         \ 'linenum' : 1,
                         \ 'linetext' : "",
