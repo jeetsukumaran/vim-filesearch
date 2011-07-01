@@ -17,13 +17,17 @@
 ""  for more details.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Reload Guard {{{1
+" Reload and Compatibility Guard {{{1
 " ============================================================================
 " Reload protection.
 if (exists('g:did_filesearch') && g:did_filesearch) || &cp || version < 700
     finish
 endif
 let g:did_filesearch = 1
+
+" avoid line continuation issues (see ':help user_41.txt')
+let s:save_cpo = &cpo
+set cpo&vim
 
 " 1}}}
 
@@ -37,6 +41,12 @@ command! -complete=file -bang -nargs=* Fsgrep   :call filesearch#OpenFilesearchG
 if !exists('g:filesearch_suppress_keymaps') || !g:filesearch_suppress_keymaps
 endif
 
+" 1}}}
+
+" Restore State {{{1
+" ============================================================================
+" restore options
+let &cpo = s:save_cpo
 " 1}}}
 
 " vim:foldlevel=4:
