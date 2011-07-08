@@ -615,7 +615,7 @@ function! s:NewCatalogViewer(bufname)
             if self.bufnum >= 0 && bufexists(self.bufnum)
                 execute("silent keepalt keepjumps sb " . self.bufnum)
                 call self.clear_buffer()
-                call self.close()
+                call self.close(1)
             endif
         endif
 
@@ -643,7 +643,7 @@ function! s:NewCatalogViewer(bufname)
         else
             let l:bfwn = bufwinnr(self.bufnum)
             if l:bfwn >= 0
-                call self.close()
+                call self.close(1)
             else
                 call self.open()
             endif
@@ -770,7 +770,7 @@ function! s:NewCatalogViewer(bufname)
         noremap <buffer> <silent> cs          :call b:filesearch_catalog_viewer.cycle_sort_regime()<CR>
         noremap <buffer> <silent> cd          :call b:filesearch_catalog_viewer.cycle_display_regime()<CR>
         noremap <buffer> <silent> r           :call b:filesearch_catalog_viewer.rebuild_catalog()<CR>
-        noremap <buffer> <silent> q           :call b:filesearch_catalog_viewer.close()<CR>
+        noremap <buffer> <silent> q           :call b:filesearch_catalog_viewer.close(1)<CR>
 
         """"" Selection: show target and switch focus
         noremap <buffer> <silent> <CR>        :call b:filesearch_catalog_viewer.visit_target(!g:filesearch_autodismiss_on_select, 0, "")<CR>
@@ -832,11 +832,24 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Close and quit the viewer.
-    function! l:catalog_viewer.close() dict
+    function! l:catalog_viewer.close(restore_prev_window) dict
         if self.bufnum < 0 || !bufexists(self.bufnum)
             return
         endif
         call self.contract_screen()
+        if a:restore_prev_window
+            if !self.is_usable_viewport(winnr("#")) && self.first_usable_viewport() ==# -1
+            else
+                try
+                    if !self.is_usable_viewport(winnr("#"))
+                        execute(self.first_usable_viewport() . "wincmd w")
+                    else
+                        execute('wincmd p')
+                    endif
+                catch //
+                endtry
+            endif
+        endif
         execute("bwipe " . self.bufnum)
     endfunction
 
@@ -1017,7 +1030,7 @@ function! s:NewCatalogViewer(bufname)
         let [l:jump_to_targetname, l:jump_to_lnum] = self.jump_map[l:cur_line].target
         let l:cur_tab_num = tabpagenr()
         if !a:keep_catalog
-            call self.close()
+            call self.close(0)
         endif
         let l:jump_to_buf_num = self.visit_buffer(l:jump_to_targetname, a:split_cmd)
         " call setpos('.', [l:jump_to_buf_num, l:jump_to_lnum, 1, 0])
