@@ -306,49 +306,49 @@ endfunction
 function! s:NewMessenger(name)
 
     " allocate a new pseudo-object
-    let l:messenger = {}
-    let l:messenger["name"] = a:name
+    let messenger = {}
+    let messenger["name"] = a:name
     if empty(a:name)
-        let l:messenger["title"] = "filesearch"
+        let messenger["title"] = "filesearch"
     else
-        let l:messenger["title"] = "filesearch (" . l:messenger["name"] . ")"
+        let messenger["title"] = "filesearch (" . messenger["name"] . ")"
     endif
 
-    function! l:messenger.format_message(leader, msg) dict
+    function! messenger.format_message(leader, msg) dict
         return self.title . ": " . a:leader.a:msg
     endfunction
 
-    function! l:messenger.format_exception( msg) dict
+    function! messenger.format_exception( msg) dict
         return a:msg
     endfunction
 
-    function! l:messenger.send_error(msg) dict
+    function! messenger.send_error(msg) dict
         redraw
         echohl ErrorMsg
         echomsg self.format_message("[ERROR] ", a:msg)
         echohl None
     endfunction
 
-    function! l:messenger.send_warning(msg) dict
+    function! messenger.send_warning(msg) dict
         redraw
         echohl WarningMsg
         echomsg self.format_message("[WARNING] ", a:msg)
         echohl None
     endfunction
 
-    function! l:messenger.send_status(msg) dict
+    function! messenger.send_status(msg) dict
         redraw
         echohl None
         echomsg self.format_message("", a:msg)
     endfunction
 
-    function! l:messenger.send_info(msg) dict
+    function! messenger.send_info(msg) dict
         redraw
         echohl None
         echo self.format_message("", a:msg)
     endfunction
 
-    return l:messenger
+    return messenger
 
 endfunction
 " 2}}}
@@ -512,34 +512,34 @@ endfunction
 function! s:NewCatalogViewer(bufname)
 
     " initialize
-    let l:catalog_viewer = {}
+    let catalog_viewer = {}
 
     " Initialize object state.
-    let l:catalog_viewer["bufnum"] = -1
-    let l:catalog_viewer["title"] = "filesearch"
-    let l:catalog_viewer["bufname"] = "[[" . a:bufname . "]]"
-    let l:catalog_viewer["bufclaim"] = "is_" . a:bufname . "_buffer"
-    let l:filesearch_bufs = s:_find_buffers_with_var(l:catalog_viewer["bufclaim"], 1)
+    let catalog_viewer["bufnum"] = -1
+    let catalog_viewer["title"] = "filesearch"
+    let catalog_viewer["bufname"] = "[[" . a:bufname . "]]"
+    let catalog_viewer["bufclaim"] = "is_" . a:bufname . "_buffer"
+    let l:filesearch_bufs = s:_find_buffers_with_var(catalog_viewer["bufclaim"], 1)
     if len(l:filesearch_bufs) > 0
-        let l:catalog_viewer["bufnum"] = l:filesearch_bufs[0]
+        let catalog_viewer["bufnum"] = l:filesearch_bufs[0]
     endif
-    let l:catalog_viewer["search_pattern"] = ""
-    let l:catalog_viewer["search_opts"] = []
-    let l:catalog_viewer["search_path_filters"] = []
-    let l:catalog_viewer["search_paths"] = []
-    let l:catalog_viewer["filepath_list"] = []
-    let l:catalog_viewer["search_results_catalog"] = ""
-    let l:catalog_viewer["jump_map"] = {}
-    let l:catalog_viewer["split_mode"] = s:_get_split_mode()
-    let l:catalog_viewer["sort_regime"] = g:filesearch_sort_regime
-    let l:catalog_viewer["display_regime"] = g:filesearch_display_regime
-    let l:catalog_viewer["calling_bufnum"] = -1
-    let l:catalog_viewer["is_zoomed"] = 0
-    let l:catalog_viewer["columns_expanded"] = 0
-    let l:catalog_viewer["lines_expanded"] = 0
+    let catalog_viewer["search_pattern"] = ""
+    let catalog_viewer["search_opts"] = []
+    let catalog_viewer["search_path_filters"] = []
+    let catalog_viewer["search_paths"] = []
+    let catalog_viewer["filepath_list"] = []
+    let catalog_viewer["search_results_catalog"] = ""
+    let catalog_viewer["jump_map"] = {}
+    let catalog_viewer["split_mode"] = s:_get_split_mode()
+    let catalog_viewer["sort_regime"] = g:filesearch_sort_regime
+    let catalog_viewer["display_regime"] = g:filesearch_display_regime
+    let catalog_viewer["calling_bufnum"] = -1
+    let catalog_viewer["is_zoomed"] = 0
+    let catalog_viewer["columns_expanded"] = 0
+    let catalog_viewer["lines_expanded"] = 0
 
     " Populates the results list
-    function! l:catalog_viewer.parse_search_command(command) dict
+    function! catalog_viewer.parse_search_command(command) dict
         if !empty(a:command)
             let [pattern, opts, pos_args] = s:_tokenize_command(a:command)
             if [pattern, opts, pos_args] == [-1, -1, -1]
@@ -587,14 +587,14 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Populates the results list
-    function! l:catalog_viewer.update_catalog_info(...) dict
+    function! catalog_viewer.update_catalog_info(...) dict
         let self.search_results_catalog = []
         return 1
     endfunction
 
     " Opens the buffer for viewing, creating it if needed.
     " First argument, if given, should be a search command of
-    function! l:catalog_viewer.open() dict
+    function! catalog_viewer.open() dict
 
         " store calling buffer
         if (a:0 > 0 && a:1 > 0) "|| b:filesearch_catalog_viewer != self
@@ -636,7 +636,7 @@ function! s:NewCatalogViewer(bufname)
     " populates search attributes
 
     " Opens viewer if closed, closes viewer if open.
-    function! l:catalog_viewer.toggle() dict
+    function! catalog_viewer.toggle() dict
         " get buffer number of the catalog view buffer, creating it if neccessary
         if self.bufnum < 0 || !bufexists(self.bufnum)
             call self.open()
@@ -651,7 +651,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Creates a new buffer, renders and opens it.
-    function! l:catalog_viewer.create_buffer() dict
+    function! catalog_viewer.create_buffer() dict
         " get a new buf reference
         let self.bufnum = bufnr(self.bufname, 1)
         " get a viewport onto it
@@ -665,7 +665,7 @@ function! s:NewCatalogViewer(bufname)
     " Opens a viewport on the buffer according, creating it if neccessary
     " according to the spawn mode. Valid buffer number must already have been
     " obtained before this is called.
-    function! l:catalog_viewer.activate_viewport() dict
+    function! catalog_viewer.activate_viewport() dict
         let l:bfwn = bufwinnr(self.bufnum)
         if l:bfwn == winnr()
             " viewport wth buffer already active and current
@@ -687,7 +687,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Sets up buffer environment.
-    function! l:catalog_viewer.initialize_buffer() dict
+    function! catalog_viewer.initialize_buffer() dict
         call self.claim_buffer()
         call self.setup_buffer_opts()
         call self.setup_buffer_syntax()
@@ -698,12 +698,12 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Sets buffer status line.
-    function! l:catalog_viewer.setup_buffer_statusline() dict
+    function! catalog_viewer.setup_buffer_statusline() dict
         setlocal statusline=%{FilesearchStatusLine()}
     endfunction
 
     " 'Claims' a buffer by setting it to point at self.
-    function! l:catalog_viewer.claim_buffer() dict
+    function! catalog_viewer.claim_buffer() dict
         call setbufvar("%", self.bufclaim, 1)
         call setbufvar("%", "filesearch_catalog_viewer", self)
         call setbufvar("%", "filesearch_last_render_time", 0)
@@ -711,7 +711,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " 'Unclaims' a buffer by stripping all filesearch vars
-    function! l:catalog_viewer.unclaim_buffer() dict
+    function! catalog_viewer.unclaim_buffer() dict
         for l:var in ["is_filesearch_buffer",
                     \ "filesearch_catalog_viewer",
                     \ "filesearch_last_render_time",
@@ -724,7 +724,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Sets buffer options.
-    function! l:catalog_viewer.setup_buffer_opts() dict
+    function! catalog_viewer.setup_buffer_opts() dict
         setlocal buftype=nofile
         setlocal noswapfile
         setlocal nowrap
@@ -738,7 +738,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Sets buffer syntax.
-    function! l:catalog_viewer.setup_buffer_syntax() dict
+    function! catalog_viewer.setup_buffer_syntax() dict
         if has("syntax")
             syntax clear
             highlight! def FilesearchCurrentEntry gui=reverse cterm=reverse term=reverse
@@ -746,7 +746,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Sets buffer commands.
-    function! l:catalog_viewer.setup_buffer_commands() dict
+    function! catalog_viewer.setup_buffer_commands() dict
         " command! -bang -nargs=* Bdfilter :call b:filesearch_catalog_viewer.set_filter('<bang>', <q-args>)
         augroup FilesearchCatalogViewer
             au!
@@ -756,7 +756,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Sets buffer key maps.
-    function! l:catalog_viewer.setup_buffer_keymaps() dict
+    function! catalog_viewer.setup_buffer_keymaps() dict
 
         """" Disabling of unused modification keys
         for key in [".", "p", "P", "C", "x", "X", "r", "R", "i", "I", "a", "A", "D", "S", "U"]
@@ -805,7 +805,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Sets buffer folding.
-    function! l:catalog_viewer.setup_buffer_folding() dict
+    function! catalog_viewer.setup_buffer_folding() dict
         " if has("folding")
         "     "setlocal foldcolumn=3
         "     setlocal foldmethod=syntax
@@ -820,7 +820,7 @@ function! s:NewCatalogViewer(bufname)
     " Populates the buffer with the catalog index.
 
     " Appends a line to the buffer and registers it in the line log.
-    function! l:catalog_viewer.append_line(text, filepath, linenum) dict
+    function! catalog_viewer.append_line(text, filepath, linenum) dict
         let l:line_map = {
                     \ "target" : [a:filepath, a:linenum],
                     \ }
@@ -832,7 +832,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Close and quit the viewer.
-    function! l:catalog_viewer.close(restore_prev_window) dict
+    function! catalog_viewer.close(restore_prev_window) dict
         if self.bufnum < 0 || !bufexists(self.bufnum)
             return
         endif
@@ -853,7 +853,7 @@ function! s:NewCatalogViewer(bufname)
         execute("bwipe " . self.bufnum)
     endfunction
 
-    function! l:catalog_viewer.expand_screen() dict
+    function! catalog_viewer.expand_screen() dict
         if has("gui_running") && g:filesearch_autoexpand_on_split && g:filesearch_split_size
             if g:filesearch_viewport_split_policy =~ '[RL]'
                 let self.pre_expand_columns = &columns
@@ -872,7 +872,7 @@ function! s:NewCatalogViewer(bufname)
         endif
     endfunction
 
-    function! l:catalog_viewer.contract_screen() dict
+    function! catalog_viewer.contract_screen() dict
         if self.columns_expanded
                     \ && &columns - self.columns_expanded > 20
             let new_size  = &columns - self.columns_expanded
@@ -891,7 +891,7 @@ function! s:NewCatalogViewer(bufname)
         endif
     endfunction
 
-    function! l:catalog_viewer.highlight_current_line()
+    function! catalog_viewer.highlight_current_line()
         " if line(".") != b:filesearch_cur_line
             let l:prev_line = b:filesearch_cur_line
             let b:filesearch_cur_line = line(".")
@@ -901,14 +901,14 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Clears the buffer contents.
-    function! l:catalog_viewer.clear_buffer() dict
+    function! catalog_viewer.clear_buffer() dict
         call cursor(1, 1)
         exec 'silent! normal! "_dG'
     endfunction
 
     " from NERD_Tree, via VTreeExplorer: determine the number of windows open
     " to this buffer number.
-    function! l:catalog_viewer.num_viewports_on_buffer(bnum) dict
+    function! catalog_viewer.num_viewports_on_buffer(bnum) dict
         let cnt = 0
         let winnum = 1
         while 1
@@ -925,7 +925,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " from NERD_Tree: find the window number of the first normal window
-    function! l:catalog_viewer.first_usable_viewport() dict
+    function! catalog_viewer.first_usable_viewport() dict
         let i = 1
         while i <= winnr("$")
             let bnum = winbufnr(i)
@@ -942,7 +942,7 @@ function! s:NewCatalogViewer(bufname)
 
     " from NERD_Tree: returns 0 if opening a file from the tree in the given
     " window requires it to be split, 1 otherwise
-    function! l:catalog_viewer.is_usable_viewport(winnumber) dict
+    function! catalog_viewer.is_usable_viewport(winnumber) dict
         "gotta split if theres only one window (i.e. the NERD tree)
         if winnr("$") ==# 1
             return 0
@@ -965,7 +965,7 @@ function! s:NewCatalogViewer(bufname)
 
     " Acquires a viewport to show the source buffer. Returns the split command
     " to use when switching to the buffer.
-    function! l:catalog_viewer.acquire_viewport(split_cmd)
+    function! catalog_viewer.acquire_viewport(split_cmd)
         if self.split_mode == "buffer" && empty(a:split_cmd)
             " filesearch used original buffer's viewport,
             " so the the filesearch viewport is the viewport to use
@@ -1000,7 +1000,7 @@ function! s:NewCatalogViewer(bufname)
     " visible there. If not, then it looks for the first window with the
     " buffer showing and visits it there. If no windows are showing the
     " buffer, ... ?
-    function! l:catalog_viewer.visit_buffer(targetname, split_cmd) dict
+    function! catalog_viewer.visit_buffer(targetname, split_cmd) dict
         " acquire window
         let l:split_cmd = self.acquire_viewport(a:split_cmd)
         " switch to buffer in acquired window
@@ -1021,7 +1021,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Go to the selected buffer.
-    function! l:catalog_viewer.visit_target(keep_catalog, refocus_catalog, split_cmd) dict
+    function! catalog_viewer.visit_target(keep_catalog, refocus_catalog, split_cmd) dict
         let l:cur_line = line(".")
         if !has_key(l:self.jump_map, l:cur_line)
             call s:_filesearch_messenger.send_info("Not a valid navigation line")
@@ -1044,7 +1044,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Finds next line with occurrence of a file pattern.
-    function! l:catalog_viewer.goto_file_start(direction, visit_target, refocus_catalog) dict
+    function! catalog_viewer.goto_file_start(direction, visit_target, refocus_catalog) dict
         let l:ok = self.goto_pattern('^\S', a:direction)
         execute("normal! zz")
         if l:ok && a:visit_target
@@ -1053,7 +1053,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Finds next occurrence of specified pattern.
-    function! l:catalog_viewer.goto_pattern(pattern, direction) dict range
+    function! catalog_viewer.goto_pattern(pattern, direction) dict range
         if a:direction == "b" || a:direction == "p"
             let l:flags = "b"
             " call cursor(line(".")-1, 0)
@@ -1088,7 +1088,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Cycles sort regime.
-    function! l:catalog_viewer.cycle_sort_regime() dict
+    function! catalog_viewer.cycle_sort_regime() dict
         let l:cur_regime = index(s:filesearch_catalog_sort_regimes, self.sort_regime)
         let l:cur_regime += 1
         if l:cur_regime < 0 || l:cur_regime >= len(s:filesearch_catalog_sort_regimes)
@@ -1102,7 +1102,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Cycles display regime.
-    function! l:catalog_viewer.cycle_display_regime() dict
+    function! catalog_viewer.cycle_display_regime() dict
         let l:cur_regime = index(s:filesearch_catalog_display_regimes, self.display_regime)
         let l:cur_regime += 1
         if l:cur_regime < 0 || l:cur_regime >= len(s:filesearch_catalog_display_regimes)
@@ -1116,12 +1116,12 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " Rebuilds catalog.
-    function! l:catalog_viewer.rebuild_catalog() dict
+    function! catalog_viewer.rebuild_catalog() dict
         call self.open()
     endfunction
 
     " Zooms/unzooms window.
-    function! l:catalog_viewer.toggle_zoom() dict
+    function! catalog_viewer.toggle_zoom() dict
         let l:bfwn = bufwinnr(self.bufnum)
         if l:bfwn < 0
             return
@@ -1167,7 +1167,7 @@ function! s:NewCatalogViewer(bufname)
         endif
     endfunction
 
-    function! l:catalog_viewer.get_filepaths(glob_pattern, path_regexp_filters, search_paths, escape_paths) dict
+    function! catalog_viewer.get_filepaths(glob_pattern, path_regexp_filters, search_paths, escape_paths) dict
         let filepaths_list = []
         let joined_search_paths = join(a:search_paths, ",")
         let filepaths_string = globpath(joined_search_paths, a:glob_pattern)
@@ -1191,7 +1191,7 @@ function! s:NewCatalogViewer(bufname)
     endfunction
 
     " return object
-    return l:catalog_viewer
+    return catalog_viewer
 
 endfunction
 
@@ -1203,14 +1203,14 @@ endfunction
 function! s:NewFilesearchFindViewer()
 
     " initialize
-    let l:catalog_viewer = s:NewCatalogViewer("filesearch")
+    let catalog_viewer = s:NewCatalogViewer("filesearch")
 
-    function! l:catalog_viewer.populate_filepath_list() dict
+    function! catalog_viewer.populate_filepath_list() dict
         " implemented by derived classes
         self.filepath_list = []
     endfunction
 
-    function! l:catalog_viewer.update_catalog_info() dict
+    function! catalog_viewer.update_catalog_info() dict
         call self.populate_filepath_list()
         let self.search_results_catalog = []
         for fpath in self.filepath_list
@@ -1241,7 +1241,7 @@ function! s:NewFilesearchFindViewer()
         return 1
     endfunction
 
-    function! l:catalog_viewer.render_buffer() dict
+    function! catalog_viewer.render_buffer() dict
         setlocal modifiable
         call self.claim_buffer()
         call self.clear_buffer()
@@ -1274,7 +1274,7 @@ function! s:NewFilesearchFindViewer()
     endfunction
 
     " Finds next line with occurrence of a rendered index
-    function! l:catalog_viewer.goto_index_entry(direction, visit_target, refocus_catalog) dict
+    function! catalog_viewer.goto_index_entry(direction, visit_target, refocus_catalog) dict
         let l:ok = self.goto_pattern('^.', a:direction)
         execute("normal! zz")
         if l:ok && a:visit_target
@@ -1282,7 +1282,7 @@ function! s:NewFilesearchFindViewer()
         endif
     endfunction
 
-    return l:catalog_viewer
+    return catalog_viewer
 
 endfunction
 
@@ -1293,9 +1293,9 @@ endfunction
 
 function! s:NewFilesearchFindGlobViewer()
 
-    let l:catalog_viewer = s:NewFilesearchFindViewer()
+    let catalog_viewer = s:NewFilesearchFindViewer()
 
-    function! l:catalog_viewer.populate_filepath_list() dict
+    function! catalog_viewer.populate_filepath_list() dict
         if empty(self.search_pattern)
             let _search_pattern = "*"
         else
@@ -1310,7 +1310,7 @@ function! s:NewFilesearchFindGlobViewer()
         return self.filepath_list
     endfunction
 
-    return l:catalog_viewer
+    return catalog_viewer
 
 endfunction
 
@@ -1321,9 +1321,9 @@ endfunction
 
 function! s:NewFilesearchFindRxViewer()
 
-    let l:catalog_viewer = s:NewFilesearchFindViewer()
+    let catalog_viewer = s:NewFilesearchFindViewer()
 
-    function! l:catalog_viewer.populate_filepath_list() dict
+    function! catalog_viewer.populate_filepath_list() dict
         if empty(self.search_paths)
             let _search_paths = ["**"]
         else
@@ -1336,7 +1336,7 @@ function! s:NewFilesearchFindRxViewer()
         return self.filepath_list
     endfunction
 
-    return l:catalog_viewer
+    return catalog_viewer
 
 endfunction
 
@@ -1347,9 +1347,9 @@ endfunction
 " ============================================================================
 function! s:NewFilesearchGrepViewer()
 
-    let l:catalog_viewer = s:NewCatalogViewer("filesearch")
+    let catalog_viewer = s:NewCatalogViewer("filesearch")
 
-    function! l:catalog_viewer.update_catalog_info() dict
+    function! catalog_viewer.update_catalog_info() dict
         let flist = self.get_filepaths("*", self.search_path_filters, self.search_paths, 0)
         call filter(flist, 'getftype(v:val) == "file"')
         let self.filepath_list = []
@@ -1403,7 +1403,7 @@ function! s:NewFilesearchGrepViewer()
 
 
     " Sets buffer syntax.
-    function! l:catalog_viewer.setup_buffer_syntax() dict
+    function! catalog_viewer.setup_buffer_syntax() dict
         if has("syntax")
             syntax clear
             syn match FilesearchSyntaxFileGroupTitle             '^\S.*$'                   nextgroup=FilesearchSyntaxUncontextedLineNum
@@ -1417,7 +1417,7 @@ function! s:NewFilesearchGrepViewer()
         endif
     endfunction
 
-    function! l:catalog_viewer.render_buffer() dict
+    function! catalog_viewer.render_buffer() dict
         setlocal modifiable
         call self.claim_buffer()
         call self.clear_buffer()
@@ -1458,7 +1458,7 @@ function! s:NewFilesearchGrepViewer()
     endfunction
 
     " Finds next line with occurrence of a rendered index
-    function! l:catalog_viewer.goto_index_entry(direction, visit_target, refocus_catalog) dict
+    function! catalog_viewer.goto_index_entry(direction, visit_target, refocus_catalog) dict
         let l:ok = self.goto_pattern('^\s\+\d', a:direction)
         execute("normal! zz")
         if l:ok && a:visit_target
@@ -1466,7 +1466,7 @@ function! s:NewFilesearchGrepViewer()
         endif
     endfunction
 
-    return l:catalog_viewer
+    return catalog_viewer
 
 endfunction
 " 1}}}
