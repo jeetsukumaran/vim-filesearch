@@ -138,6 +138,7 @@ let s:filesearch_filetype_filters = {
             \ 'lua' :          '\.\(lua\)$',
             \ 'make' :         'Makefile',
             \ 'mason' :        '\.\(mas\|mhtml\|mpl\|mtxt\)$',
+            \ 'nim' :          '\.\(nim\|nims\)$',
             \ 'objc' :         '\.\(m\|h\)$',
             \ 'objcpp' :       '\.\(mm\|h\)$',
             \ 'ocaml' :        '\.\(ml\|mli\)$',
